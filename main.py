@@ -4,16 +4,30 @@ Weapons = {
     'gun': 50
 }
 
+Armors = {
+    'unarmored': 0,
+    'armor1': 10,
+    'armor2': 20,
+    'armor3': 40
+}
+
+
+def clamp(n, minn, maxn):
+    if n < minn:
+        return minn
+    elif n > maxn:
+        return maxn
+    else:
+        return n
+
 
 class Character(object):
     class_name = 'Character'
 
-    def __init__(self, attack=0, weapon='fist', position=(0.0, 0.0)):
+    def __init__(self, position=(0.0, 0.0)):
         self.health = 100
         self.stamina = 100
         self.position = position
-        # self.attack = attack
-        self.weapon = weapon
 
     def __del__(self):
         # print 'I\'m dying!!!'
@@ -27,31 +41,34 @@ class Character(object):
         self.position = (self.position[0] + offset[0], self.position[1] + offset[1])
 
 
-class Player(Character):
-    class_name = 'Player'
+class Fighter(Character):
+    class_name = 'Fighter'
 
-    def __init__(self, name, attack=0, weapon='fist', position=(0.0, 0.0)):
-        super(Player, self).__init__(attack=attack, weapon=weapon, position=position)
+    def __init__(self, name, weapon='fist', armor='unarmored', position=(0.0, 0.0)):
+        super(Fighter, self).__init__(position=position)
         self.name = name
+        self.weapon = weapon
+        self.armor = armor
         self.attack = Weapons[self.weapon]
+        self.defense = Armors[self.armor]
 
     def __del__(self):
-        super(Player, self).__del__()
+        super(Fighter, self).__del__()
         # print 'My name was %s.' % self.name
         pass
 
     def report(self):
         print 'Name: %s' % self.name
-        # super(Player, self).report()
-        print 'Fight with : %s / damage : %i' % (self.weapon, Weapons[self.weapon])
+        # super(Fighter, self).report()
+        print 'Fight with : %s / damage : %i / defense : %i' % (self.weapon, self.attack,self.defense)
 
 
 def fight(char1, char2):
     count = 0
     while char1.health > 0 and char2.health > 0:
         count += 1
-        char1.health -= char2.attack
-        char2.health -= char1.attack
+        char1.health -= clamp(char2.attack - char1.defense, 0, 100)
+        char2.health -= clamp(char1.attack - char2.defense, 0, 100)
         print 'round ' + str(count) + ' : ' + char1.name + ' health : ' + str(
             char1.health) + ' / ' + char2.name + ' health : ' + str(char2.health)
 
@@ -64,8 +81,8 @@ def fight(char1, char2):
 
 
 def main():
-    fighter1 = Player('Covid', 0, 'knife')
-    fighter2 = Player('Human', 0, 'gun')
+    fighter1 = Fighter('Covid', 'knife','armor3')
+    fighter2 = Fighter('Human', 'gun')
     fighter1.report()
     fighter2.report()
     fight(fighter1, fighter2)
