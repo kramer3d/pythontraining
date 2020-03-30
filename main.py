@@ -50,8 +50,8 @@ class Armor(object):
 
     def deplete_defense(self, val):
         self.defense -= val
-        if self.defense<=0:
-            self.defense=0
+        if self.defense <= 0:
+            self.defense = 0
 
 
 class Character(object):
@@ -82,8 +82,8 @@ class Fighter(Character):
         self.name = name
         self.weapon = weapon
         self.armor = armor
-        self.attack = weapon.damage
-        self.defense = armor.defense
+        # self.attack = weapon.damage
+        # self.defense = armor.defense
 
     def __del__(self):
         super(Fighter, self).__del__()
@@ -94,20 +94,21 @@ class Fighter(Character):
         print 'Name: %s' % self.name
         # super(Fighter, self).report()
         print 'Fight with: %s / damage: %i // Armor: %s / defense: %i' % (
-            self.weapon.name, self.attack, self.armor.name, self.defense)
+            self.weapon.name, self.weapon.damage, self.armor.name, self.armor.defense)
 
 
 def fight(char1, char2):
     count = 0
     while char1.health > 0 and char2.health > 0:
         count += 1
-        char1.health -= clamp(char2.attack - char1.armor.defense, 0, 100)
-        char1.armor.deplete_defense(char2.attack)
-        char2.health -= clamp(char1.attack - char2.armor.defense, 0, 100)
-        char2.armor.deplete_defense(char1.attack)
+        char1.health -= clamp(char2.weapon.damage - char1.armor.defense, 0, 100)
+        char1.armor.deplete_defense(char2.weapon.damage)
+        char2.health -= clamp(char1.weapon.damage - char2.armor.defense, 0, 100)
+        char2.armor.deplete_defense(char1.weapon.damage)
 
-        print 'round ' + str(count) + ' : ' + char1.name + ' health : ' + str(
-            char1.health) + ' / ' + char2.name + ' health : ' + str(char2.health)
+        print 'round ' + str(count) + ' : ' + char1.name + ' health: ' + str(
+            char1.health) + ' / Armor: ' + str(char1.armor.defense) + ' //// ' + char2.name + ' health: ' +\
+              str(char2.health)  + ' / Armor: ' + str(char2.armor.defense)
 
     if char1.health <= 0 and char2.health <= 0:
         print "Draw"
@@ -118,11 +119,12 @@ def fight(char1, char2):
 
 
 def main():
-    knife1 = Weapon('knife')
+    weapon1 = Weapon('fist')
     armor1 = Armor('armor3')
-    fighter1 = Fighter('Covid', knife1, armor1)
-    gun1 = Weapon('gun')
-    fighter2 = Fighter('Human',gun1)
+    weapon2 = Weapon('knife')
+    armor2 = Armor('armor2')
+    fighter1 = Fighter('Covid', weapon1, armor1)
+    fighter2 = Fighter('Human', weapon2, armor2)
     fighter1.report()
     fighter2.report()
     fight(fighter1, fighter2)
