@@ -129,12 +129,5 @@ def main():
     fighter2.report()
     fight(fighter1, fighter2)
 
-
-'''
-    fighter1.move((2.5, 4.5))
-    fighter1.report()
-    fighter2.move((2.5, 5.5))
-    fighter2.report()
-'''
 main()
 print 'Finished!'
