@@ -129,5 +129,6 @@ def main():
     fighter2.report()
     fight(fighter1, fighter2)
 
+
 main()
 print 'Finished!'
